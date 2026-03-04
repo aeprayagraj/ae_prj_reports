@@ -3,19 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <title>Aero Eagle Report Gateway</title>
+
 <style>
+
 body{
-    font-family: Arial;
-    text-align:center;
-    padding-top:80px;
+font-family:Arial;
+text-align:center;
+padding-top:100px;
+background:#f5f5f5;
 }
+
+.container{
+background:white;
+display:inline-block;
+padding:30px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.15);
+}
+
+input{
+padding:10px;
+font-size:16px;
+width:220px;
+margin-top:10px;
+}
+
+button{
+padding:10px 20px;
+margin-top:15px;
+font-size:16px;
+cursor:pointer;
+}
+
+.result{
+margin-top:15px;
+font-size:20px;
+}
+
 </style>
+
 </head>
 
 <body>
 
+<div class="container">
+
 <h2>Aero Eagle Report Gateway</h2>
-<p>Loading report...</p>
+
+<div id="message">Enter Password</div>
+
+<input type="password" id="password" placeholder="Password">
+
+<br>
+
+<button onclick="checkPassword()">Open Report</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
 
 <script>
 
@@ -23,7 +69,6 @@ body{
 
 const REPORTS = {
 
-  // PUBLIC LINKS
   "dailyreport": {
     link: "https://1drv.ms/x/c/bccc0999596dc156/IQBHOK6GqW8_SoMFQkwjOT0zAQFEP2JOPU_XBiK6mOGGCdU",
     password: "ae@123"
@@ -48,8 +93,6 @@ const REPORTS = {
     link: "https://1drv.ms/x/c/bccc0999596dc156/IQDEmcyaicP1ToHP9o9cxxS6Afvyzg5wS1kKpNAdceZQGcU",
     password: "ae@123"
   },
-
-  // INTERNAL EDITABLE LINKS
 
   "ae.dailyreport": {
     link: "https://1drv.ms/x/c/bccc0999596dc156/IQBHOK6GqW8_SoMFQkwjOT0zATu9gRL0rox4GbQPIIqkTHs",
@@ -78,34 +121,64 @@ const REPORTS = {
 
 };
 
-// ================= URL PARAMETER =================
+
+// ================= GET REPORT KEY =================
 
 const params = new URLSearchParams(window.location.search);
 const key = params.get("r");
 
+
 // ================= VALIDATION =================
 
 if(!key){
-    document.body.innerHTML = "<h3>No report specified.</h3>";
+
+document.getElementById("message").innerHTML="No report specified";
+document.getElementById("password").style.display="none";
+
 }
 else if(!REPORTS[key]){
-    document.body.innerHTML = "<h3>Invalid report link.</h3>";
+
+document.getElementById("message").innerHTML="Invalid report link";
+document.getElementById("password").style.display="none";
+
+}
+
+
+// ================= PASSWORD CHECK =================
+
+function checkPassword(){
+
+let entered=document.getElementById("password").value;
+
+if(entered===REPORTS[key].password){
+
+document.getElementById("result").innerHTML="✔ Access Granted";
+
+setTimeout(function(){
+
+window.location.replace(REPORTS[key].link);
+
+},800);
+
 }
 else{
 
-    const entered = prompt("Enter report password:");
-
-    if(entered === REPORTS[key].password){
-
-        window.location.replace(REPORTS[key].link);
-
-    }else{
-
-        document.body.innerHTML = "<h3>Wrong password.</h3>";
-
-    }
+document.getElementById("result").innerHTML="✖ Wrong Password";
 
 }
+
+}
+
+
+// ENTER KEY SUPPORT
+
+document.getElementById("password").addEventListener("keypress",function(e){
+
+if(e.key==="Enter"){
+checkPassword();
+}
+
+});
 
 </script>
 
